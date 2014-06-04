@@ -110,7 +110,7 @@ It will be added to the app by `py2app`.
   the `dist` dir. You can run it by double clicking on it in Finder or
   with this command in a terminal
 
-  `open dist/Spyder.app`
+    `open dist/Spyder.app`
 
 
 ## Create the DMG
