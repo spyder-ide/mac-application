@@ -53,7 +53,7 @@ SIZE="600M"
 sudo echo "Starting"
 
 # Removing possible stale files and dirs
-rm -f template.dmg
+rm -f *.dmg
 sudo rm -Rf /Volumes/Spyder
 
 # Creating template
