@@ -5,8 +5,8 @@
 
 ### Install Homebrew
 
-Follow the instructions on this page
-https://github.com/mxcl/homebrew/wiki/installation
+Follow the instructions on [this
+page](https://github.com/mxcl/homebrew/wiki/installation)
 
 ### Install Python2 (for now)
 
@@ -14,8 +14,8 @@ https://github.com/mxcl/homebrew/wiki/installation
 
 ### Install Qt and PyQt4
 
-* Download and install Qt from the Qt
-  [site](http://qt-project.org/downloads) directly. This is very
+* Download and install Qt from the [Qt
+  site](http://qt-project.org/downloads) directly. This is very
   important because the Homebrew versions are not compatible between
   MacOS versions.
 
@@ -41,12 +41,13 @@ https://github.com/mxcl/homebrew/wiki/installation
 
 ### Install matplotlib
 
-* Just in Lion (To have these libraries included in the app)
+*Note*: We need to have freetype and libpng included in the app to be
+compatible across MacOS versions.
 
-  * `brew install freetype`
-  * `brew install libpng`
-  * `brew link --force freetype`
-  * `brew link --force libpng`
+* `brew install freetype`
+* `brew install libpng`
+* `brew link --force freetype`
+* `brew link --force libpng`
 
 * `brew install matplotlib`
 
@@ -83,7 +84,9 @@ https://github.com/mxcl/homebrew/wiki/installation
 
 * `pip install py2app`
 
-*Note*: It's **not** necessary to install Spyder
+### Finally: Don't install Spyder
+
+It will be added to the app by `py2app`.
 
 
 ## Create the app
@@ -92,16 +95,16 @@ https://github.com/mxcl/homebrew/wiki/installation
 
 * Run
   
-  * `python setup.py build_doc`
-  * `python create_app.py py2app`
+    * `python setup.py build_doc`
+    * `python create_app.py py2app`
 
-  * Caveats:
+    * Caveats:
 
-    * Fix possible Python 3 incompatible syntax if reported by
-      `py2app`.
+        * Fix possible Python 3 incompatible syntax if reported by
+      	  `py2app`.
 
-    * Add an `__init__.py` to the mpl_toolkits package so that
-      `py2app` can add it to the app.
+    	* Add an `__init__.py` to the mpl_toolkits package so that
+      	  `py2app` can add it to the app.
 
 * If everything has gone well, you should see an `Spyder` file under
   the `dist` dir. You can run it by double clicking on it in Finder or
@@ -116,7 +119,7 @@ https://github.com/mxcl/homebrew/wiki/installation
 
 * Run `create_dmg.sh` with the appropiate options, e.g.
 
-  `create_dmg.sh --app=../spyder/dist/Spyder.app --name=spyder-2.3.0.dmg`
+    `create_dmg.sh --app=../spyder/dist/Spyder.app --name=spyder-2.3.0.dmg`
 
 * If everything has gone well, you should see a file called
   spyder-X.Y.Z.dmg in the same dir. This is the file ready to upload
