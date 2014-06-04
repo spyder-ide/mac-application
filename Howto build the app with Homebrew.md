@@ -86,7 +86,7 @@ https://github.com/mxcl/homebrew/wiki/installation
 *Note*: It's not necessary to install Spyder
 
 
-## Creating the app
+## Create the app
 
 * Move to the root of your Spyder repo
 
