@@ -41,8 +41,8 @@ page](https://github.com/mxcl/homebrew/wiki/installation)
 
 ### Install matplotlib
 
-*Note*: We need to have freetype and libpng included in the app to be
-compatible across MacOS versions.
+*Note*: We need to have `freetype` and `libpng` included in the app to
+be compatible across MacOS versions.
 
 * `brew install freetype`
 * `brew install libpng`
@@ -103,7 +103,7 @@ It will be added to the app by `py2app`.
         * Fix possible Python 3 incompatible syntax if reported by
       	  `py2app`.
 
-    	* Add an `__init__.py` to the mpl_toolkits package so that
+    	* Add an `__init__.py` to the `mpl_toolkits` package so that
       	  `py2app` can add it to the app.
 
 * If everything has gone well, you should see an `Spyder` file under
@@ -119,8 +119,8 @@ It will be added to the app by `py2app`.
 
 * Run `create_dmg.sh` with the appropiate options, e.g.
 
-    `create_dmg.sh --app=../spyder/dist/Spyder.app --name=spyder-2.3.0.dmg`
+    `./create_dmg.sh --app=../spyder/dist/Spyder.app --name=spyder-2.3.0.dmg`
 
 * If everything has gone well, you should see a file called
-  spyder-X.Y.Z.dmg in the same dir. This is the file ready to upload
+  `spyder-X.Y.Z.dmg` in the same dir. This is the file ready to upload
   to Bitbucket.
