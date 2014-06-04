@@ -83,7 +83,7 @@ https://github.com/mxcl/homebrew/wiki/installation
 
 * `pip install py2app`
 
-*Note*: It's not necessary to install Spyder
+*Note*: It's **not** necessary to install Spyder
 
 
 ## Create the app
@@ -91,10 +91,33 @@ https://github.com/mxcl/homebrew/wiki/installation
 * Move to the root of your Spyder repo
 
 * Run
+  
   * `python setup.py build_doc`
   * `python create_app.py py2app`
 
-* Caveats:
-  * Fix possible Python 3 incompatible syntax if reported by py2app
-  * Add an `__init__.py` to the mpl_toolkits package so that py2app
-    can add it to the app
+  * Caveats:
+
+    * Fix possible Python 3 incompatible syntax if reported by
+      `py2app`.
+
+    * Add an `__init__.py` to the mpl_toolkits package so that
+      `py2app` can add it to the app.
+
+* If everything has gone well, you should see an `Spyder` file under
+  the `dist` dir. You can run it by double clicking on it in Finder or
+  with this command in a terminal
+
+  `open dist/Spyder.app`
+
+
+## Create the DMG
+
+* Clone this repo and `cd` to its root
+
+* Run `create_dmg.sh` with the appropiate options, e.g.
+
+  `create_dmg.sh --app=../spyder/dist/Spyder.app --name=spyder-2.3.0.dmg`
+
+* If everything has gone well, you should see a file called
+  spyder-X.Y.Z.dmg in the same dir. This is the file ready to upload
+  to Bitbucket.
