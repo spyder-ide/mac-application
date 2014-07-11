@@ -10,7 +10,7 @@
 for i in "$@"
 do
     case $i in
-        --app-path=*)
+        --app=*)
             APP_PATH="${i#*=}"
             shift
             ;;
@@ -22,8 +22,8 @@ do
             echo "Bash script to build a DMG file for Spyder"
 	    echo ""
 	    echo "Options:"
-            echo "--app-path= : Path where Spyder.app is located (absolute or relative)"
-            echo "--name= : Name to give to the app (e.g. Spyder-x.y.z.dmg)"
+            echo "--app= : Path where Spyder.app is located (absolute or relative)"
+            echo "--name= : Name to give to the DMG (e.g. spyder-x.y.z.dmg)"
 	    exit
             ;;
         *)
