@@ -95,7 +95,7 @@ It will be added to the app by `py2app`.
 
 * Run
   
-    * `python setup.py build_doc`
+    * `python setup.py build`
     * `python create_app.py py2app`
 
     * Caveats:
