@@ -13,7 +13,8 @@ import subprocess
 QT_VERSION = "4.8.6"
 CELLAR = 'HOMEBREW_CELLAR'
 
-brew_config = subprocess.check_output(['brew', '--config']).split('\n')
+brew_config = subprocess.check_output(['brew', '--config']).decode('utf-8')
+brew_config = brew_config.split('\n')
 cellar_config = [c for c in brew_config if c.startswith(CELLAR)][0]
 cellar_dir = cellar_config.split()[1]
 brew_qt_dir = osp.join(cellar_dir, 'qt', QT_VERSION)
