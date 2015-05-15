@@ -1,16 +1,18 @@
 
 # How to build the Spyder MacOS X application
 
+**Important note**: These instructions are valid only for MacOS X 10.9+
+
 ## Installation
 
 ### Install Homebrew
 
-Follow the instructions on [this
-page](https://github.com/mxcl/homebrew/wiki/installation)
+Follow the instructions on [this page](http://brew.sh/)
 
-### Install Python2 (for now)
+### Install Python
 
-* `brew install python`
+* `brew install python` or,
+* `brew install python3`
 
 ### Install Qt and PyQt4
 
@@ -18,42 +20,32 @@ page](https://github.com/mxcl/homebrew/wiki/installation)
   directly. This is very important because the Homebrew versions are not compatible between
   MacOS versions.
 
-* Run the script `symlink-qt.py`
+* Run `python symlink-qt.py` or `python3 symlink-qt.py`
 
-* `brew install pyqt`
+* For Python 2
 
-### Add Homebrew formulas for scientific and Python scientific libraries
+  * `brew install --build-from-source --without-python3 sip`
+  * `brew install --build-from-source --without-python3 pyqt`
 
-* `brew tap homebrew/science`
-* `brew tap samueljohn/python`
+* For Python 3
 
-### Install gfortran
+  * `brew install --build-from-source --with-python3 --without-python sip`
+  * `brew install --build-from-source --with-python3 --without-python pyqt`
 
-`brew install gcc`
+* *Note*: Ignore the Homebrew warnings printed when installing PyQt4. They are
+  not important
 
 ### Install the main Python scientific libraries
 
+* *Note*: If you are using Python 3, please use `pip3` instead of `pip`
+
 * `pip install nose`
-* `brew link --force openblas`
 * `pip install numpy`
 * `pip install scipy`
-
-### Install matplotlib
-
-*Note*: We need to have `freetype` and `libpng` included in the app to
-be compatible across MacOS versions.
-
-* `brew install freetype`
-* `brew install libpng`
-* `brew link --force freetype`
-* `brew link --force libpng`
-
-* `brew install matplotlib`
+* `pip install matplotlib`
 
 ### Install IPython
 
-* `brew install zmq`
-* `pip install cython`
 * `pip install pyzmq`
 * `pip install pygments`
 
@@ -68,13 +60,14 @@ be compatible across MacOS versions.
 * `pip install pandas`
 * `pip install sympy`
 * `pip install patsy`
-* `pip install statmodels`
+* `pip install statsmodels`
+* `pip install seaborn`
 
 ### Install Spyder deps
 
 * `pip install pyflakes`
 * `pip install rope`
-* `pip install sphinx`
+* `pip install sphinx==1.2.1`
 * `pip install pylint`
 * `pip install pep8`
 * `pip install psutil`
@@ -97,13 +90,31 @@ It will be added to the app by `py2app`.
     * `python setup.py build`
     * `python create_app.py py2app`
 
-    * Caveats:
+* Fix IPython Qt crash. Sometimes IPython is unable to detect PyQt4, which
+  makes the app to crash immediately. To fix it run
 
-        * Fix possible Python 3 incompatible syntax if reported by
-      	  `py2app`.
+  `nano -w dist/Spyder.app/Contents/Resources/lib/python3.4/IPython/external/qt_loaders.py`
 
-    	* Add an `__init__.py` to the `mpl_toolkits` package so that
-      	  `py2app` can add it to the app.
+  then look for the function `has_binding` and make it return True after its
+  first line, like this
+
+  ```python
+  def has_binding(api):
+      """Safely check for PyQt4/5 or PySide, without importing
+      submodules
+
+      Parameters
+      ----------
+      api : str [ 'pyqtv1' | 'pyqt' | 'pyqt5' | 'pyside' | 'pyqtdefault']
+           Which module to check for
+
+      Returns
+      -------
+      True if the relevant module appears to be importable
+      """
+      return True
+      ...
+  ```
 
 * If everything has gone well, you should see an `Spyder` file under
   the `dist` dir. You can run it by double clicking on it in Finder or
