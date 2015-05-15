@@ -11,8 +11,7 @@ Follow the instructions on [this page](http://brew.sh/)
 
 ### Install Python
 
-* `brew install python` or,
-* `brew install python3`
+* `brew install python` or `brew install python3`
 
 ### Install Qt and PyQt4
 
@@ -37,7 +36,7 @@ Follow the instructions on [this page](http://brew.sh/)
 
 ### Install the main Python scientific libraries
 
-* *Note*: If you are using Python 3, please use `pip3` instead of `pip`
+*Note*: If you are using Python 3, please use `pip3` instead of `pip`
 
 * `pip install nose`
 * `pip install numpy`
@@ -48,9 +47,8 @@ Follow the instructions on [this page](http://brew.sh/)
 
 * `pip install pyzmq`
 * `pip install pygments`
-
-* Stable release: `pip install --no-deps ipython`
-* From git: `pip install https://github.com/ipython/ipython/tarball/master`
+* `pip install --no-deps ipython` (For the stable release)
+* `pip install https://github.com/ipython/ipython/tarball/master` (From git)
 
 ### Install other scientific libraries
 
