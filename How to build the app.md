@@ -95,7 +95,8 @@ It will be added to the app by `py2app`.
     * `python setup.py build`
     * `python create_app.py py2app`
 
-* Fix a bug in py2app 0.9
+* Fix a bug in py2app 0.9 (See [this issue](https://bitbucket.org/ronaldoussoren/py2app/issue/137/py2app-problems-using-enthought-python)
+  for the suggested solution)
 
   If you encounter a bug like this one, after running the last command:
 
