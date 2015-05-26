@@ -95,6 +95,25 @@ It will be added to the app by `py2app`.
     * `python setup.py build`
     * `python create_app.py py2app`
 
+* Fix a bug in py2app 0.9
+
+  If you encounter a bug like this one, after running the last command:
+
+  ```python-traceback
+  Traceback (most recent call last):
+    ...
+    File "/usr/local/lib/python3.4/site-packages/macholib/MachOGraph.py", line 49, in locate
+      loader=loader.filename)
+  TypeError: dyld_find() got an unexpected keyword argument 'loader'
+  ```
+
+  Please run
+
+  `nano -w /usr/local/lib/python3.4/site-packages/macholib/MachOGraph.py`
+
+  look for the `locate` method of the `MachOGraph` class, then inside it identify
+  a call for `dyld_find` and replace its `loader` kwarg for `loader_path`
+
 * Fix a possible IPython Qt crash
 
   Sometimes IPython is unable to detect PyQt4, which makes the app to crash
