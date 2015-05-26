@@ -19,6 +19,7 @@ cellar_config = [c for c in brew_config if c.startswith(CELLAR)][0]
 cellar_dir = cellar_config.split()[1]
 brew_qt_dir = osp.join(cellar_dir, 'qt', QT_VERSION)
 
+
 # Creating the Homebrew Qt dir
 try:
     os.makedirs(brew_qt_dir)

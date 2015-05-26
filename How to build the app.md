@@ -19,17 +19,24 @@ Follow the instructions on [this page](http://brew.sh/)
   directly. This is very important because the Homebrew versions are not compatible between
   MacOS versions.
 
-* Run `python symlink-qt.py` or `python3 symlink-qt.py`
+* Run
+  
+  - `python symlink-qt.py` or
+  - `python3 symlink-qt.py`
 
-* For Python 2
+  to create a Homebrew package (using symlinks) from the Qt installation
 
-  * `brew install --build-from-source --without-python3 sip`
-  * `brew install --build-from-source --without-python3 pyqt`
+* Install PyQt
 
-* For Python 3
+  - For Python 2
 
-  * `brew install --build-from-source --with-python3 --without-python sip`
-  * `brew install --build-from-source --with-python3 --without-python pyqt`
+    + `brew install --build-from-source --without-python3 sip`
+    + `brew install --build-from-source --without-python3 pyqt`
+
+  - For Python 3
+
+    + `brew install --build-from-source --with-python3 --without-python sip`
+    + `brew install --build-from-source --with-python3 --without-python pyqt`
 
 * *Note*: Ignore the Homebrew warnings printed when installing PyQt4. They are
   not important
@@ -88,8 +95,10 @@ It will be added to the app by `py2app`.
     * `python setup.py build`
     * `python create_app.py py2app`
 
-* Fix IPython Qt crash. Sometimes IPython is unable to detect PyQt4, which
-  makes the app to crash immediately. To fix it run
+* Fix a possible IPython Qt crash
+
+  Sometimes IPython is unable to detect PyQt4, which makes the app to crash
+  immediately on startup. To fix it run
 
   `nano -w dist/Spyder.app/Contents/Resources/lib/python3.4/IPython/external/qt_loaders.py`
 
@@ -114,11 +123,12 @@ It will be added to the app by `py2app`.
       ...
   ```
 
-* If everything has gone well, you should see an `Spyder` file under
-  the `dist` dir. You can run it by double clicking on it in Finder or
+* If everything has gone well, you should see an `Spyder` or `Spyder-Py2` file
+  under the `dist` dir. You can run it by double clicking on it on Finder or
   with this command in a terminal
 
-    `open dist/Spyder.app`
+  - `open dist/Spyder.app` or
+  - `open dist/Spyder-Py2.app`
 
 
 ## Create the DMG
@@ -127,8 +137,8 @@ It will be added to the app by `py2app`.
 
 * Run `create_dmg.sh` with the appropiate options, e.g.
 
-    `./create_dmg.sh --app=../spyder/dist/Spyder.app --name=spyder-2.3.0.dmg`
+    `./create_dmg.sh --app=../spyder/dist/Spyder.app --name=spyder-2.3.0-py2.7.dmg`
 
 * If everything has gone well, you should see a file called
-  `spyder-X.Y.Z.dmg` in the same dir. This is the file ready to upload
-  to Bitbucket.
+  `spyder-2.3.0-py2.7.dmg` in the same dir. This is the file ready to upload
+  to our downloads site.
