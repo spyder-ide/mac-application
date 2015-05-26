@@ -137,8 +137,8 @@ It will be added to the app by `py2app`.
 
 * Run `create_dmg.sh` with the appropiate options, e.g.
 
-    `./create_dmg.sh --app=../spyder/dist/Spyder.app --name=spyder-2.3.0-py2.7.dmg`
+    `./create_dmg.sh --app=../spyder/dist/Spyder.app --name=spyder-2.3.0-py3.4.dmg`
 
 * If everything has gone well, you should see a file called
-  `spyder-2.3.0-py2.7.dmg` in the same dir. This is the file ready to upload
+  `spyder-2.3.0-py3.4.dmg` in the same dir. This is the file ready to upload
   to our downloads site.
