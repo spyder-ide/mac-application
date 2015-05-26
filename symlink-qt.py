@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
+#
+# Copyright (c) 2015 The Spyder Development Team
+# Licensed under the terms of the MIT License
+
 """
-Symlink External Qt in Homebrew
+Symlink an external Qt in Homebrew to make it appear as a Homebrew package
 """
 
 from __future__ import print_function
@@ -9,7 +13,9 @@ import os
 import os.path as osp
 import subprocess
 
+#==============================================================================
 # Getting the directory where we're going to symlink Qt
+#==============================================================================
 QT_VERSION = "4.8.6"
 CELLAR = 'HOMEBREW_CELLAR'
 
@@ -19,16 +25,18 @@ cellar_config = [c for c in brew_config if c.startswith(CELLAR)][0]
 cellar_dir = cellar_config.split()[1]
 brew_qt_dir = osp.join(cellar_dir, 'qt', QT_VERSION)
 
-
+#==============================================================================
 # Creating the Homebrew Qt dir
+#==============================================================================
 try:
     os.makedirs(brew_qt_dir)
     os.chdir(brew_qt_dir)
 except:
     print("Error creating Qt dir under Homebrew")
 
-
+#==============================================================================
 # Symlink the external Qt installation under the previous directory
+#==============================================================================
 try:
     os.symlink('/Developer/Tools/Qt', './bin')
     os.symlink('/Library/Frameworks', './Frameworks')
