@@ -72,7 +72,7 @@ Follow the instructions on [this page](http://brew.sh/)
 
 * `pip install pyflakes`
 * `pip install rope`
-* `pip install sphinx==1.2.1`
+* `pip install sphinx`
 * `pip install pylint`
 * `pip install pep8`
 * `pip install psutil`
