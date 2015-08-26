@@ -15,7 +15,7 @@ Follow the instructions on [this page](http://brew.sh/)
 
 ### Install Qt and PyQt4
 
-* Download and install Qt from the [Qt site](http://download.qt.io/archive/qt/4.8/4.8.6/)
+* Download and install Qt from the [Qt site](http://download.qt.io/archive/qt/)
   directly. This is very important because the Homebrew versions are not compatible between
   MacOS versions.
 
