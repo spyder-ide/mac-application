@@ -11,7 +11,8 @@ Follow the instructions on [this page](http://brew.sh/)
 
 ### Install Python
 
-* `brew install python` or `brew install python3`
+* `brew install python`
+* `brew install python3`
 
 ### Install Qt and PyQt4
 
@@ -33,15 +34,8 @@ Follow the instructions on [this page](http://brew.sh/)
 
 * Install PyQt
 
-  - For Python 2
-
-    + `brew install --build-from-source --without-python3 sip`
-    + `brew install --build-from-source --without-python3 pyqt`
-
-  - For Python 3
-
-    + `brew install --build-from-source --with-python3 --without-python sip`
-    + `brew install --build-from-source --with-python3 --without-python pyqt`
+  - `brew install --build-from-source --with-python3 sip`
+  - `brew install --build-from-source --with-python3 pyqt`
 
 * *Note*: Ignore the Homebrew warnings printed when installing PyQt4. They are
   not important
