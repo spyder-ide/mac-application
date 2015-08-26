@@ -114,12 +114,12 @@ It will be added to the app by `py2app`.
   look for the `locate` method of the `MachOGraph` class, then inside it identify
   a call for `dyld_find` and replace its `loader` kwarg for `loader_path`
 
-* Fix a possible IPython Qt crash
+* Fix a possible qtconsole crash
 
-  Sometimes IPython is unable to detect PyQt4, which makes the app to crash
+  Sometimes `qtconsole` is unable to detect PyQt4, which makes the app to crash
   immediately on startup. To fix it run
 
-  `nano -w dist/Spyder.app/Contents/Resources/lib/python3.4/IPython/external/qt_loaders.py`
+  `nano -w dist/Spyder.app/Contents/Resources/lib/python3.4/qtconsole/qt_loaders.py`
 
   then look for the function `has_binding` and make it return True after its
   first line, like this
