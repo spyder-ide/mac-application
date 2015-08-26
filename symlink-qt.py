@@ -13,10 +13,11 @@ import os
 import os.path as osp
 import subprocess
 
+
 #==============================================================================
 # Getting the directory where we're going to symlink Qt
 #==============================================================================
-QT_VERSION = "4.8.6"
+QT_VERSION = "4.8.7"
 CELLAR = 'HOMEBREW_CELLAR'
 
 brew_config = subprocess.check_output(['brew', '--config']).decode('utf-8')
@@ -24,6 +25,7 @@ brew_config = brew_config.split('\n')
 cellar_config = [c for c in brew_config if c.startswith(CELLAR)][0]
 cellar_dir = cellar_config.split()[1]
 brew_qt_dir = osp.join(cellar_dir, 'qt', QT_VERSION)
+
 
 #==============================================================================
 # Creating the Homebrew Qt dir
@@ -33,6 +35,7 @@ try:
     os.chdir(brew_qt_dir)
 except:
     print("Error creating Qt dir under Homebrew")
+
 
 #==============================================================================
 # Symlink the external Qt installation under the previous directory
