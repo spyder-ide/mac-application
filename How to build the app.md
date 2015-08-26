@@ -42,43 +42,43 @@ Follow the instructions on [this page](http://brew.sh/)
 
 ### Install the main Python scientific libraries
 
-*Note*: If you are using Python 3, please use `pip3` instead of `pip`
+*Note*: If you are using Python 3, please use `pip3` instead of `pip2`
 
-* `pip install nose`
-* `pip install numpy`
-* `pip install scipy`
-* `pip install matplotlib`
+* `pip2 install nose`
+* `pip2 install numpy`
+* `pip2 install scipy`
+* `pip2 install matplotlib`
 
 ### Install Jupyter
 
-* `pip install pyzmq`
-* `pip install pygments`
-* `pip install qtconsole`
-* `pip install nbconvert`
+* `pip2 install pyzmq`
+* `pip2 install pygments`
+* `pip2 install qtconsole`
+* `pip2 install nbconvert`
 
 ### Install other scientific libraries
 
-* `pip install pillow`
-* `pip install scikit-learn`
-* `pip install scikit-image`
-* `pip install pandas`
-* `pip install sympy`
-* `pip install patsy`
-* `pip install statsmodels`
-* `pip install seaborn`
+* `pip2 install pillow`
+* `pip2 install scikit-learn`
+* `pip2 install scikit-image`
+* `pip2 install pandas`
+* `pip2 install sympy`
+* `pip2 install patsy`
+* `pip2 install statsmodels`
+* `pip2 install seaborn`
 
 ### Install Spyder deps
 
-* `pip install pyflakes`
-* `pip install rope`
-* `pip install sphinx`
-* `pip install pylint`
-* `pip install pep8`
-* `pip install psutil`
+* `pip2 install pyflakes`
+* `pip2 install rope`
+* `pip2 install sphinx`
+* `pip2 install pylint`
+* `pip2 install pep8`
+* `pip2 install psutil`
 
 ### Install py2app (to build the app)
 
-* `pip install py2app`
+* `pip2 install py2app`
 
 ### Finally: Don't install Spyder
 
