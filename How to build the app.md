@@ -49,12 +49,12 @@ Follow the instructions on [this page](http://brew.sh/)
 * `pip install scipy`
 * `pip install matplotlib`
 
-### Install IPython
+### Install Jupyter
 
 * `pip install pyzmq`
 * `pip install pygments`
-* `pip install --no-deps ipython` (For the stable release)
-* `pip install https://github.com/ipython/ipython/tarball/master` (From git)
+* `pip install qtconsole`
+* `pip install nbconvert`
 
 ### Install other scientific libraries
 
