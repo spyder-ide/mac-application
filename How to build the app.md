@@ -19,6 +19,11 @@ Follow the instructions on [this page](http://brew.sh/)
   directly. This is very important because the Homebrew versions are not compatible between
   MacOS versions.
 
+* *Note*: If you need to uninstall Qt to install a new version, you need to run this
+  command:
+
+  `sudo python /Developer/Tools/uninstall-qt.py`
+
 * Run
   
   - `python symlink-qt.py` or
