@@ -45,7 +45,13 @@ if [ -z "$DMG_NAME" ]; then
 fi
 
 # Global variables
-VOLNAME="Spyder"
+if [[ "$DMG_NAME" == *"py2.7"* ]]
+then
+    VOLNAME="Spyder-Py2";
+else
+    VOLNAME="Spyder";
+fi
+
 SIZE="600M"
 
 # Ask for sudo before starting to avoid an error while creating
