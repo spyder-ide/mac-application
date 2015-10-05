@@ -60,12 +60,12 @@ sudo echo "Starting"
 
 # Removing possible stale files and dirs
 rm -f *.dmg
-sudo rm -Rf /Volumes/Spyder
+sudo rm -Rf /Volumes/${VOLNAME}
 
 # Creating template
 echo ""
 echo "Creating uncompressed disk image"
-hdiutil create -size $SIZE -fs HFS+J -volname $VOLNAME ./template.dmg
+hdiutil create -size $SIZE -fs HFS+J -volname ${VOLNAME} ./template.dmg
 
 # Mounting template
 echo ""
@@ -75,25 +75,25 @@ hdiutil attach template.dmg -readwrite -mount required
 # Copy installer interface
 echo ""
 echo "Copying files"
-mkdir -p /Volumes/Spyder/.background
+mkdir -p /Volumes/${VOLNAME}/.background
 cd files
-cp -f background.png Chromium\ license.txt /Volumes/Spyder/.background/
-cp -f DS_Store /Volumes/Spyder/.DS_Store
-cp -f Applications /Volumes/Spyder/
+cp -f background.png Chromium\ license.txt /Volumes/${VOLNAME}/.background/
+cp -f DS_Store /Volumes/${VOLNAME}/.DS_Store
+cp -f Applications /Volumes/${VOLNAME}/
 cd ..
 
 # Copy application
-sudo rm -Rf /Volumes/Spyder/Spyder.app
-cp -R $APP_PATH /Volumes/Spyder/
+sudo rm -Rf /Volumes/${VOLNAME}/${VOLNAME}.app
+cp -R $APP_PATH /Volumes/${VOLNAME}/
 
 # Removing unneeded files
-sudo rm -R /Volumes/Spyder/.Trashes
-sudo rm -R /Volumes/Spyder/.fseventsd
+sudo rm -R /Volumes/${VOLNAME}/.Trashes
+sudo rm -R /Volumes/${VOLNAME}/.fseventsd
 
 # Unmounting template
 echo ""
 echo "Unmounting uncompressed image"
-hdiutil detach /Volumes/$VOLNAME
+hdiutil detach /Volumes/${VOLNAME}
 
 # Compressing final image
 echo ""
