@@ -27,7 +27,7 @@ Follow the instructions on [this page](http://brew.sh/)
 
 * Run
   
-  - `python symlink-qt.py` or
+  - `python2 symlink-qt.py` or
   - `python3 symlink-qt.py`
 
   to create a Homebrew package (using symlinks) from the Qt installation
