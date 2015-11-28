@@ -78,7 +78,12 @@ echo "Copying files"
 mkdir -p /Volumes/${VOLNAME}/.background
 cd files
 cp -f background.png Chromium\ license.txt /Volumes/${VOLNAME}/.background/
-cp -f DS_Store /Volumes/${VOLNAME}/.DS_Store
+if [[ "$DMG_NAME" == *"py2.7"* ]]
+then
+    cp -f DS_Store-Py2 /Volumes/${VOLNAME}/.DS_Store
+else
+    cp -f DS_Store /Volumes/${VOLNAME}/.DS_Store
+fi
 cp -f Applications /Volumes/${VOLNAME}/
 cd ..
 
