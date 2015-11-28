@@ -16,29 +16,14 @@ Follow the instructions on [this page](http://brew.sh/)
 
 ### Install Qt and PyQt4
 
-* Download and install Qt from the [Qt site](http://download.qt.io/official_releases/qt/)
-  directly. This is very important because the Homebrew versions are not compatible between
-  MacOS versions.
+* Install Qt
 
-* *Note*: If you need to uninstall Qt to install a new version, you need to run this
-  command:
-
-  `sudo python /Developer/Tools/uninstall-qt.py`
-
-* Run
-  
-  - `python2 symlink-qt.py` or
-  - `python3 symlink-qt.py`
-
-  to create a Homebrew package (using symlinks) from the Qt installation
+  `brew install qt`
 
 * Install PyQt
 
-  - `brew install --build-from-source --with-python3 sip`
-  - `brew install --build-from-source --with-python3 pyqt`
-
-* *Note*: Ignore the Homebrew warnings printed when installing PyQt4. They are
-  not important
+  - `brew install --with-python3 sip`
+  - `brew install --with-python3 pyqt`
 
 ### Install the main Python scientific libraries
 
@@ -102,14 +87,14 @@ It will be added to the app by `py2app`.
   ```python-traceback
   Traceback (most recent call last):
     ...
-    File "/usr/local/lib/python3.4/site-packages/macholib/MachOGraph.py", line 49, in locate
+    File "/usr/local/lib/python3.5/site-packages/macholib/MachOGraph.py", line 49, in locate
       loader=loader.filename)
   TypeError: dyld_find() got an unexpected keyword argument 'loader'
   ```
 
   Please run
 
-  `nano -w /usr/local/lib/python3.4/site-packages/macholib/MachOGraph.py`
+  `nano -w /usr/local/lib/python3.5/site-packages/macholib/MachOGraph.py`
 
   look for the `locate` method of the `MachOGraph` class, then inside it identify
   a call for `dyld_find` and replace its `loader` kwarg for `loader_path`
@@ -119,7 +104,7 @@ It will be added to the app by `py2app`.
   Sometimes `qtconsole` is unable to detect PyQt4, which makes the app to crash
   immediately on startup. To fix it run
 
-  `nano -w dist/Spyder.app/Contents/Resources/lib/python3.4/qtconsole/qt_loaders.py`
+  `nano -w dist/Spyder.app/Contents/Resources/lib/python3.5/qtconsole/qt_loaders.py`
 
   then look for the function `has_binding` and make it return True after its
   first line, like this
@@ -156,8 +141,8 @@ It will be added to the app by `py2app`.
 
 * Run `create_dmg.sh` with the appropiate options, e.g.
 
-    `./create_dmg.sh --app=../spyder/dist/Spyder.app --name=spyder-2.3.0-py3.4.dmg`
+    `./create_dmg.sh --app=../spyder/dist/Spyder.app --name=spyder-2.3.0-py3.5.dmg`
 
 * If everything has gone well, you should see a file called
-  `spyder-2.3.0-py3.4.dmg` in the same dir. This is the file ready to upload
+  `spyder-2.3.0-py3.5.dmg` in the same dir. This is the file ready to upload
   to our downloads site.
