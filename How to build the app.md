@@ -11,64 +11,53 @@ Follow the instructions on [this page](http://brew.sh/)
 
 ### Install Python
 
-* `brew install python`
 * `brew install python3`
 
-### Install Qt and PyQt
+### Install PyQt
 
-* Install Qt
-
-  `brew install qt5`
-  `brew link --force qt5`
-
-* Install PyQt
-
-  - `brew install --with-python3 sip`
-  - `brew install --with-python --build-from-source pyqt5`
+* `pip3 install pyqt5`
 
 ### Install the main Python scientific libraries
 
-*Note*: If you are using Python 3, please use `pip3` instead of `pip2`
-
-* `pip2 install nose`
-* `pip2 install numpy`
-* `pip2 install scipy`
-* `pip2 install matplotlib`
+* `pip3 install nose`
+* `pip3 install numpy`
+* `pip3 install scipy`
+* `pip3 install matplotlib`
 
 ### Install Jupyter
 
-* `pip2 install pyzmq`
-* `pip2 install pygments`
-* `pip2 install qtconsole`
-* `pip2 install nbconvert`
+* `pip3 install pyzmq`
+* `pip3 install pygments`
+* `pip3 install qtconsole`
+* `pip3 install nbconvert`
 
 ### Install other scientific libraries
 
-* `pip2 install pillow`
-* `pip2 install scikit-learn`
-* `pip2 install scikit-image`
-* `pip2 install pandas`
-* `pip2 install sympy`
-* `pip2 install patsy`
-* `pip2 install statsmodels`
-* `pip2 install seaborn`
+* `pip3 install pillow`
+* `pip3 install scikit-learn`
+* `pip3 install scikit-image`
+* `pip3 install pandas`
+* `pip3 install sympy`
+* `pip3 install patsy`
+* `pip3 install statsmodels`
+* `pip3 install seaborn`
 
 
 ### Install Spyder deps
 
-* `pip2 install qtpy`
-* `pip2 install qtawesome`
-* `pip2 install pyflakes`
-* `pip2 install rope`
-* `pip2 install jedi`
-* `pip2 install sphinx`
-* `pip2 install pylint`
-* `pip2 install pep8`
-* `pip2 install psutil`
+* `pip3 install qtpy`
+* `pip3 install qtawesome`
+* `pip3 install pyflakes`
+* `pip3 install rope`
+* `pip3 install jedi`
+* `pip3 install sphinx`
+* `pip3 install pylint`
+* `pip3 install pep8`
+* `pip3 install psutil`
 
 ### Install py2app (to build the app)
 
-* `pip2 install py2app`
+* `pip3 install py2app`
 
 ### Finally: Don't install Spyder
 
@@ -81,8 +70,8 @@ It will be added to the app by `py2app`.
 
 * Run
   
-    * `python2 setup.py build`
-    * `python2 create_app.py py2app`
+    * `python3 setup.py build`
+    * `python3 create_app.py py2app`
 
 * Fix a bug in py2app 0.9 (See [this issue](https://bitbucket.org/ronaldoussoren/py2app/issue/137/py2app-problems-using-enthought-python)
   for the suggested solution)
@@ -103,6 +92,31 @@ It will be added to the app by `py2app`.
 
   look for the `locate` method of the `MachOGraph` class, then inside it identify
   a call for `dyld_find` and replace its `loader` kwarg for `loader_path`
+
+* Fix a bug in Babel
+
+  If you encounter a bug like this one:
+
+  ```python-traceback
+  File "/Users/carlos/Projects/spyder/dist/Spyder.app/Contents/Resources/lib/python3.5/babel/localtime/_unix.py", line 73, in _get_localzone
+  Oct  8 17:33:16 Carloss-Mac.local Spyder[28350] <Notice>: TypeError: cannot use a string pattern on a bytes-like object
+  ```
+
+  Please run
+
+  nano -w dist/Spyder.app/Contents/Resources/lib/python3.5/babel/localtime/_unix.py
+
+  look for this line
+
+  ```python
+  tz_match = _systemconfig_tz.search(sys_result)
+  ```
+
+  in the function `_get_localzone` and change it to
+
+  ```python
+  tz_match = None
+  ```
 
 * Fix a possible qtconsole crash
 
