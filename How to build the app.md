@@ -14,16 +14,17 @@ Follow the instructions on [this page](http://brew.sh/)
 * `brew install python`
 * `brew install python3`
 
-### Install Qt and PyQt4
+### Install Qt and PyQt
 
 * Install Qt
 
-  `brew install qt`
+  `brew install qt5`
+  `brew link --force qt5`
 
 * Install PyQt
 
   - `brew install --with-python3 sip`
-  - `brew install --with-python3 pyqt`
+  - `brew install --with-python --build-from-source pyqt5`
 
 ### Install the main Python scientific libraries
 
@@ -52,10 +53,14 @@ Follow the instructions on [this page](http://brew.sh/)
 * `pip2 install statsmodels`
 * `pip2 install seaborn`
 
+
 ### Install Spyder deps
 
+* `pip2 install qtpy`
+* `pip2 install qtawesome`
 * `pip2 install pyflakes`
 * `pip2 install rope`
+* `pip2 install jedi`
 * `pip2 install sphinx`
 * `pip2 install pylint`
 * `pip2 install pep8`
