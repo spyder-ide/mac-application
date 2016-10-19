@@ -146,12 +146,11 @@ It will be added to the app by `py2app`.
       ...
   ```
 
-* If everything has gone well, you should see an `Spyder` or `Spyder-Py2` file
-  under the `dist` dir. You can run it by double clicking on it on Finder or
-  with these commands on a terminal
+* If everything has gone well, you should see an `Spyder` directory under
+  the `dist` dir. You can run it by double clicking on it on Finder or
+  with this command on a terminal
 
-  - `open dist/Spyder.app` or
-  - `open dist/Spyder-Py2.app`
+  - `open dist/Spyder.app`
 
 
 ## Create the DMG
@@ -160,8 +159,8 @@ It will be added to the app by `py2app`.
 
 * Run `create_dmg.sh` with the appropiate options, e.g.
 
-    `./create_dmg.sh --app=../spyder/dist/Spyder.app --name=spyder-2.3.8-py3.5.dmg`
+    `./create_dmg.sh --app=../spyder/dist/Spyder.app --name=spyder-3.0.0-py3.5.dmg`
 
 * If everything has gone well, you should see a file called
-  `spyder-2.3.8-py3.5.dmg` in the same dir. This is the file ready to upload
+  `spyder-3.0.0-py3.5.dmg` in the same dir. This is the file ready to upload
   to our downloads site.
