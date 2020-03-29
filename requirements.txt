@@ -2,6 +2,8 @@
 # So to get performant launches on mybinder.org, we have copied
 # the contents of this file to binder/environment.yml. If you
 # make changes here, please copy them over there too.
+
+# For Spyder core
 applaunchservices >=0.1.7
 atomicwrites >=1.2.0
 chardet >=2.0.0
@@ -18,7 +20,6 @@ parso ==0.5.2
 pexpect >=4.4.0
 pickleshare >=0.4
 psutil >=5.3
-py2app
 pycodestyle
 pyflakes
 pygments >=2.0
@@ -33,7 +34,16 @@ qtawesome >=0.5.7
 qtconsole >=4.6.0
 qtpy >=1.5.0
 sphinx >=0.6.6
-# NOTE: There's no need to set a version for spyder-kernels
-# here because we're using a subrepo for it to run our tests.
-spyder-kernels
+spyder-kernels >=1.9.0,<1.10.0
 watchdog
+
+# Incorporate packages for use by end user
+numpy
+scipy
+pandas
+matplotlib
+cython
+sympy
+
+# For building standalone Mac app
+py2app
