@@ -84,6 +84,7 @@ then
 else
     cp -f DS_Store /Volumes/${VOLNAME}/.DS_Store
 fi
+echo -e "Make Applications symbolic link"
 cp -f Applications /Volumes/${VOLNAME}/
 cd ..
 
