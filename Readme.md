@@ -1,166 +1,65 @@
 
-# How to build the Spyder MacOS X application
+## How to build the Spyder MacOS X application
 
-**Important note**: These instructions are valid only for MacOS X 10.9+
+**Important note**: These instructions have only been tested on MacOS X 10.14.6
 
-## Installation
+To build the Spyder standalone Mac application you need:
+* Python 3.x installed, *not* from Anaconda
+* A local clone of the [spyder](https://github.com/spyder-ide/spyder) repository
+* A local clone of the [spyder-kernels](https://github.com/spyder-ide/spyder-kernels) repository
+* A local clone of this repository
 
-### Install Homebrew
+Once you have the above requirements, you will create a virtual environment from which to build the application.
 
-Follow the instructions on [this page](http://brew.sh/)
+### Python 3.x installation
 
-### Install Python
+In principle, it doesn't matter where your Python installation comes from except that it cannot come from Anaconda.
+I do not know exactly why an Anaconda installation does not work except that it has something to do with hardlinks.
 
-* `brew install python3`
+I recommend using [Homebrew](http://brew.sh/) to install Python, along with pyenv and pyenv-virtualenv (if you plan to use these for virtual environment management).
 
-### Install PyQt
+After installing Homebrew, run:
+```
+$ brew install python3, pyenv, pyenv-virtualenv
+```
 
-* `pip3 install pyqt5`
+If you use pyenv must enable frameworks in your Python installation, as follows.
+If you are using venv, you can ignore this.
+```
+$ PYTHON_CONFIGURE_OPTS='--enable-framework'
+$ pyenv install <python version>
+```
 
-### Install the main Python scientific libraries
+### Create Virtual Environment
 
-* `pip3 install nose`
-* `pip3 install numpy`
-* `pip3 install scipy`
-* `pip3 install matplotlib`
+First, change your current working directory to your local clone of this repository.
+If you currently have any conda environment(s) activated, then deactivate them completely, i.e. you should not be in any conda environment, not even base.
 
-### Install Jupyter
+Next, create the virtual environment and populate it with the necessary package requirements.
+If you are using pyenv with pyenv-virtualenv, it will look like this:
+```
+$ pyenv virtualenv <python version> env-spy-dev
+$ pyenv local env-spy-dev
+(env-spy-dev) $ pip install --upgrade pip
+(env-spy-dev) $ pip install -r requirements.txt
+```
 
-* `pip3 install pyzmq`
-* `pip3 install pygments`
-* `pip3 install qtconsole`
-* `pip3 install nbconvert`
+If you are using venv, it will look like this:
+```
+$ python -m venv --clear --copies env-spy-dev
+$ source env-spy-dev/bin/activate
+(env-spy-dev) $ pip install --upgrade pip
+(env-spy-dev) $ pip install -r requirements.txt
+```
 
-### Install other scientific libraries
+### Create the Standalone Application
 
-* `pip3 install pillow`
-* `pip3 install scikit-learn`
-* `pip3 install scikit-image`
-* `pip3 install pandas`
-* `pip3 install sympy`
-* `pip3 install patsy`
-* `pip3 install statsmodels`
-* `pip3 install seaborn`
+For the build to work properly, your local clones of both spyder and spyder-kernels must be at the same directory level as your local clone of this repository.
+To create the standalone application and package it in a dmg disk image run:
+```
+(env-spy-dev) $ python setup.py py2app
+```
 
-
-### Install Spyder deps
-
-* `pip3 install qtpy`
-* `pip3 install qtawesome`
-* `pip3 install pyflakes`
-* `pip3 install rope`
-* `pip3 install jedi`
-* `pip3 install sphinx`
-* `pip3 install pylint`
-* `pip3 install pep8`
-* `pip3 install psutil`
-
-### Install py2app (to build the app)
-
-* `pip3 install py2app`
-
-### Finally: Don't install Spyder
-
-It will be added to the app by `py2app`.
-
-
-## Create the app
-
-* Move to the root of your Spyder repo
-
-* Run
-  
-    * `python3 setup.py build`
-    * `python3 create_app.py py2app`
-
-* Fix a bug in py2app 0.9 (See [this issue](https://bitbucket.org/ronaldoussoren/py2app/issue/137/py2app-problems-using-enthought-python)
-  for the suggested solution)
-
-  If you encounter a bug like this one, after running the last command:
-
-  ```python-traceback
-  Traceback (most recent call last):
-    ...
-    File "/usr/local/lib/python3.5/site-packages/macholib/MachOGraph.py", line 49, in locate
-      loader=loader.filename)
-  TypeError: dyld_find() got an unexpected keyword argument 'loader'
-  ```
-
-  Please run
-
-  `nano -w /usr/local/lib/python3.5/site-packages/macholib/MachOGraph.py`
-
-  look for the `locate` method of the `MachOGraph` class, then inside it identify
-  a call for `dyld_find` and replace its `loader` kwarg for `loader_path`
-
-* Fix a bug in Babel
-
-  If you encounter a bug like this one:
-
-  ```python-traceback
-  File "/Users/carlos/Projects/spyder/dist/Spyder.app/Contents/Resources/lib/python3.5/babel/localtime/_unix.py", line 73, in _get_localzone
-  Oct  8 17:33:16 Carloss-Mac.local Spyder[28350] <Notice>: TypeError: cannot use a string pattern on a bytes-like object
-  ```
-
-  Please run
-
-  nano -w dist/Spyder.app/Contents/Resources/lib/python3.5/babel/localtime/_unix.py
-
-  look for this line
-
-  ```python
-  tz_match = _systemconfig_tz.search(sys_result)
-  ```
-
-  in the function `_get_localzone` and change it to
-
-  ```python
-  tz_match = None
-  ```
-
-* Fix a possible qtconsole crash
-
-  Sometimes `qtconsole` is unable to detect PyQt4, which makes the app to crash
-  immediately on startup. To fix it run
-
-  `nano -w dist/Spyder.app/Contents/Resources/lib/python3.5/qtconsole/qt_loaders.py`
-
-  then look for the function `has_binding` and make it return True after its
-  first line, like this
-
-  ```python
-  def has_binding(api):
-      """Safely check for PyQt4/5 or PySide, without importing
-      submodules
-
-      Parameters
-      ----------
-      api : str [ 'pyqtv1' | 'pyqt' | 'pyqt5' | 'pyside' | 'pyqtdefault']
-           Which module to check for
-
-      Returns
-      -------
-      True if the relevant module appears to be importable
-      """
-      return True
-      ...
-  ```
-
-* If everything has gone well, you should see an `Spyder` directory under
-  the `dist` dir. You can run it by double clicking on it on Finder or
-  with this command on a terminal
-
-  - `open dist/Spyder.app`
-
-
-## Create the DMG
-
-* Clone this repo and `cd` to its root
-
-* Run `create_dmg.sh` with the appropiate options, e.g.
-
-    `./create_dmg.sh --app=../spyder/dist/Spyder.app --name=spyder-3.0.0-py3.5.dmg`
-
-* If everything has gone well, you should see a file called
-  `spyder-3.0.0-py3.5.dmg` in the same dir. This is the file ready to upload
-  to our downloads site.
+After a whole lot of screen dump, and if everything went well, you should now have two files in the `dist` folder of this repository:
+* Spyder.app
+* Spyder-\<Spyder version\> Py-\<Python version\>.dmg
