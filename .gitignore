@@ -1,2 +1,4 @@
 *.dmg
 \.DS_Store
+build/
+dist/

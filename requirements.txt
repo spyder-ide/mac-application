@@ -47,3 +47,4 @@ sympy
 
 # For building standalone Mac app
 py2app
+dmgbuild
