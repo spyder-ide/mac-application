@@ -1,0 +1,7 @@
+# Incorporate packages for use by end user
+numpy
+scipy
+pandas
+matplotlib
+cython
+sympy

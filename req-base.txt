@@ -1,9 +1,4 @@
-# We can not refer to an environment.yml file from another
-# So to get performant launches on mybinder.org, we have copied
-# the contents of this file to binder/environment.yml. If you
-# make changes here, please copy them over there too.
-
-# For Spyder core
+# Spyder core requirements
 applaunchservices >=0.1.7
 atomicwrites >=1.2.0
 chardet >=2.0.0
@@ -36,15 +31,3 @@ qtpy >=1.5.0
 sphinx >=0.6.6
 spyder-kernels >=1.9.0,<1.10.0
 watchdog
-
-# Incorporate packages for use by end user
-numpy
-scipy
-pandas
-matplotlib
-cython
-sympy
-
-# For building standalone Mac app
-py2app
-dmgbuild
