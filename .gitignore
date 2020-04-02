@@ -2,3 +2,6 @@
 \.DS_Store
 build/
 dist/
+spyder/
+spyder_kernels/
+Spyder.py

@@ -13,56 +13,101 @@ $ python setup.py py2app   (to build the app)
 
 import os
 import sys
-from logging import getLogger
+import shutil
+from logging import getLogger, StreamHandler, Formatter
 from setuptools import setup
 from dmgbuild import build_dmg
 
+fmt = Formatter('%(asctime)s [%(levelname)s] [%(name)s] -> %(message)s')
+h = StreamHandler()
+h.setFormatter(fmt)
 logger = getLogger('Spy-Mac-App')
+logger.addHandler(h)
+logger.setLevel('INFO')
 
-if not os.path.exists('spyder'):
-    os.symlink('../spyder/spyder', 'spyder')
-if not os.path.exists('spyder_kernels'):
-    os.symlink('../spyder-kernels/spyder_kernels', 'spyder_kernels')
+here = os.path.abspath(__file__)
+this_repo = os.path.dirname(here)
+base = os.path.dirname(this_repo)
+dist = os.path.join(this_repo, 'dist')
+spy_repo = os.path.join(base, 'spyder')
+ker_repo = os.path.join(base, 'spyder-kernels')
 
-# here = os.path.abspath(__file__)
-# basedir = os.path.dirname(os.path.dirname(here))
-# spy_repo = os.path.join(basedir, 'spyder')
-# ker_repo = os.path.join(basedir, 'spyder-kernels')
-# # sys.path = [spy_repo, ker_repo] + sys.path
-# sys.path = [spy_repo] + sys.path
+# copy spyder and spyder-kernels to repo
+shutil.rmtree('spyder', ignore_errors=True)
+shutil.rmtree('spyder_kernels', ignore_errors=True)
+shutil.copytree(os.path.join(spy_repo, 'spyder'), 'spyder')
+shutil.copytree(os.path.join(ker_repo, 'spyder_kernels'), 'spyder_kernels')
 
 from spyder import __version__ as spy_version
 from spyder.config.utils import EDIT_FILETYPES, _get_extensions
 from spyder.config.base import MAC_APP_NAME
 
-here = os.path.realpath(__file__)
-repodir = os.path.dirname(here)
-distdir = os.path.join(repodir, 'dist')
-spyrepo = os.path.realpath('../spyder')
+# parse additional arguments
+make_app = True if 'py2app' in sys.argv else False
+make_alias = True if '-A' in sys.argv else False
+make_lite = False
+make_dmg = False
+if '--lite' in sys.argv:
+    make_lite = True
+    sys.argv.remove('--lite')
+if '--no-dmg' in sys.argv:
+    make_dmg = False
+    sys.argv.remove('--no-dmg')
 
-iconfile = os.path.join(spyrepo, 'img_src', 'spyder.icns')
+iconfile = os.path.join(spy_repo, 'img_src', 'spyder.icns')
 
 #==============================================================================
 # App Creation
 #==============================================================================
-logger.info('Creating app bundle...')
-
 APP_MAIN_SCRIPT = MAC_APP_NAME[:-4] + '.py'
-# shutil.copyfile('../spyder/scripts/spyder', APP_MAIN_SCRIPT)
-if not os.path.exists(APP_MAIN_SCRIPT):
-    os.symlink(os.path.join(spyrepo, 'scripts', 'spyder'), APP_MAIN_SCRIPT)
+shutil.copy2(os.path.join(spy_repo, 'scripts', 'spyder'), APP_MAIN_SCRIPT)
 
 APP = [APP_MAIN_SCRIPT]
 EXCLUDES = []
-PACKAGES = ['spyder', 'sphinx', 'jinja2', 'docutils', 'alabaster', 'babel',
-            'snowballstemmer', 'IPython', 'ipykernel', 'ipython_genutils',
-            'jupyter_client', 'jupyter_core', 'traitlets', 'qtconsole',
-            'pexpect', 'jedi', 'jsonschema', 'nbconvert', 'nbformat', 'qtpy',
-            'qtawesome', 'zmq', 'pygments', 'distutils', 'PyQt5', 'psutil',
-            'wrapt', 'lazy_object_proxy', 'spyder_kernels', 'pyls',
-            'pylint', 'astroid', 'pycodestyle', 'pyflakes']
+PACKAGES = [
+            # Cannot be in Resources/lib/pythonXX.zip
+            'astroid',         # ImportError: cannot import name 'context' from 'astroid' (<path>/Resources/lib/python38.zip/astroid/__init__.pyc)
+            'pygments',        # ModuleNotFoundError: No module named 'pygments.formatters.latex'
+            'qtawesome',       # NotADirectoryError: [Errno 20] Not a directory: '<path>/Resources/lib/python38.zip/qtawesome/fonts/fontawesome4.7-webfont.ttf'
+            'spyder',          # NotADirectoryError: [Errno 20] Not a directory: '<path>/Resources/lib/python38.zip/spyder/app/mac_stylesheet.qss'
+            'spyder_kernels',  # No module named spyder_kernels.console.__main__
+            'ipykernel',       # ModuleNotFoundError: No module named 'ipykernel.datapub'
+            # 'sphinx',
+            # 'jinja2',
+            # 'docutils',
+            # 'alabaster',
+            # 'babel',
+            # 'snowballstemmer',
+            # 'IPython',
+            # 'ipython_genutils',
+            # 'jupyter_client',
+            # 'jupyter_core',
+            # 'traitlets',
+            # 'qtconsole',
+            # 'pexpect',
+            # 'jedi',
+            # 'jsonschema',
+            # 'nbconvert',
+            # 'nbformat',
+            # 'qtpy',
+            # 'zmq',
+            # 'distutils',
+            # 'PyQt5',
+            # 'psutil',
+            # 'wrapt',
+            # 'lazy_object_proxy',
+            # 'pyls',
+            # 'pylint',
+            # 'pycodestyle',
+            # 'pyflakes',
+            # 'autopep8',
+            # 'flake8',
+            ]
 
-INCLUDES = ['numpy', 'scipy', 'pandas', 'matplotlib', 'cython', 'sympy']
+if make_lite:
+    INCLUDES = []
+else:
+    INCLUDES = ['numpy', 'scipy', 'pandas', 'matplotlib', 'cython', 'sympy']
 
 EDIT_EXT = [ext[1:] for ext in _get_extensions(EDIT_FILETYPES)]
 
@@ -79,31 +124,40 @@ OPTIONS = {
               'CFBundleShortVersionString': spy_version}
 }
 
-setup(app=APP, options={'py2app': OPTIONS})
+if make_app:
+    if make_alias:
+        logger.info('Creating app bundle in alias mode...')
+    else:
+        logger.info('Creating app bundle...')
+    setup(app=APP, options={'py2app': OPTIONS})
+else:
+    logger.info('Skipping app bundle...')
 
 # =============================================================================
 # DMG Creation
 # =============================================================================
-logger.info('Building dmg file...')
-
 py_version = sys.version.split(' ')[0]
 
-appfile = os.path.join(distdir, MAC_APP_NAME)
+appfile = os.path.join(dist, MAC_APP_NAME)
 name = f'{MAC_APP_NAME[:-4]}-{spy_version} Py-{py_version}'
-dmgfile = os.path.join(distdir, f'{name}.dmg')
-settings_file = os.path.join(repodir, 'dmg_settings.py')
-background = os.path.join(repodir, 'files', 'background.png')
-defines = {'app': appfile, 'badge_icon': iconfile, 'background': background}
-build_dmg(dmgfile, name, settings_file=settings_file, defines=defines)
+dmgfile = os.path.join(dist, f'{name}.dmg')
+settings_file = os.path.join(this_repo, 'dmg_settings.py')
+defines = {'app': appfile, 'badge_icon': iconfile}
+
+if make_dmg:
+    logger.info('Building dmg file...')
+    build_dmg(dmgfile, name, settings_file=settings_file, defines=defines)
+else:
+    logger.info('Skipping dmg file...')
 
 # =============================================================================
 # Clean Up
 # =============================================================================
-logger.info('Cleaning up build')
-
-if os.path.exists('spyder'):
-    os.remove('spyder')
-if os.path.exists('spyder_kernels'):
-    os.remove('spyder_kernels')
-if os.path.exists(APP_MAIN_SCRIPT):
-    os.remove(APP_MAIN_SCRIPT)
+if not make_alias:
+    logger.info('Cleaning up...')
+    shutil.rmtree('spyder', ignore_errors=True)
+    shutil.rmtree('spyder_kernels', ignore_errors=True)
+    if os.path.exists(APP_MAIN_SCRIPT):
+        os.remove(APP_MAIN_SCRIPT)
+else:
+    logger.info('Keeping "spyder" and "spyder_kernels" for alias mode')
