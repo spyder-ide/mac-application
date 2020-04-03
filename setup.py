@@ -14,6 +14,7 @@ $ python setup.py py2app   (to build the app)
 import os
 import sys
 import shutil
+import pkg_resources
 from logging import getLogger, StreamHandler, Formatter
 from setuptools import setup
 from dmgbuild import build_dmg
@@ -27,10 +28,10 @@ logger.setLevel('INFO')
 
 here = os.path.abspath(__file__)
 this_repo = os.path.dirname(here)
-base = os.path.dirname(this_repo)
-dist = os.path.join(this_repo, 'dist')
-spy_repo = os.path.join(base, 'spyder')
-ker_repo = os.path.join(base, 'spyder-kernels')
+basedir = os.path.dirname(this_repo)
+distdir = os.path.join(this_repo, 'dist')
+spy_repo = os.path.join(basedir, 'spyder')
+ker_repo = os.path.join(basedir, 'spyder-kernels')
 
 # copy spyder and spyder-kernels to repo
 shutil.rmtree('spyder', ignore_errors=True)
@@ -56,6 +57,9 @@ if '--no-dmg' in sys.argv:
 
 iconfile = os.path.join(spy_repo, 'img_src', 'spyder.icns')
 
+py_ver = [sys.version_info.major, sys.version_info.minor,
+          sys.version_info.micro]
+
 #==============================================================================
 # App Creation
 #==============================================================================
@@ -65,44 +69,36 @@ shutil.copy2(os.path.join(spy_repo, 'scripts', 'spyder'), APP_MAIN_SCRIPT)
 APP = [APP_MAIN_SCRIPT]
 EXCLUDES = []
 PACKAGES = [
-            # Cannot be in Resources/lib/pythonXX.zip
-            'astroid',         # ImportError: cannot import name 'context' from 'astroid' (<path>/Resources/lib/python38.zip/astroid/__init__.pyc)
-            'pygments',        # ModuleNotFoundError: No module named 'pygments.formatters.latex'
-            'qtawesome',       # NotADirectoryError: [Errno 20] Not a directory: '<path>/Resources/lib/python38.zip/qtawesome/fonts/fontawesome4.7-webfont.ttf'
-            'spyder',          # NotADirectoryError: [Errno 20] Not a directory: '<path>/Resources/lib/python38.zip/spyder/app/mac_stylesheet.qss'
-            'spyder_kernels',  # No module named spyder_kernels.console.__main__
-            'ipykernel',       # ModuleNotFoundError: No module named 'ipykernel.datapub'
-            # 'sphinx',
-            # 'jinja2',
-            # 'docutils',
-            # 'alabaster',
-            # 'babel',
-            # 'snowballstemmer',
-            # 'IPython',
-            # 'ipython_genutils',
-            # 'jupyter_client',
-            # 'jupyter_core',
-            # 'traitlets',
-            # 'qtconsole',
-            # 'pexpect',
-            # 'jedi',
-            # 'jsonschema',
-            # 'nbconvert',
-            # 'nbformat',
-            # 'qtpy',
-            # 'zmq',
-            # 'distutils',
-            # 'PyQt5',
-            # 'psutil',
-            # 'wrapt',
-            # 'lazy_object_proxy',
-            # 'pyls',
-            # 'pylint',
-            # 'pycodestyle',
-            # 'pyflakes',
-            # 'autopep8',
-            # 'flake8',
-            ]
+    # The following packages cannot be in Resources/lib/pythonXX.zip
+    # ImportError: cannot import name 'context' from 'astroid'
+    # (<path>/Resources/lib/python38.zip/astroid/__init__.pyc)
+    'astroid',
+    # ModuleNotFoundError: No module named 'ipykernel.datapub'
+    'ipykernel',
+    # jedi.api.environment.InvalidPythonEnvironment: Could not get version
+    # information for '<path>/Contents/MacOS/python': InternalError("The
+    # subprocess <path>/Contents/MacOS/python has crashed (EOFError('Ran out
+    # of input'), stderr=).")
+    'jedi',
+    # ModuleNotFoundError: No module named 'keyring.backends.<mod>'
+    'keyring',
+    # NotADirectoryError: [Errno 20] Not a directory:
+    # '<path>/Resources/lib/python38.zip/parso/python/grammar38.txt'
+    'parso',
+    # ModuleNotFoundError: No module named 'pygments.formatters.latex'
+    'pygments',
+    # <path>/Contents/MacOS/python: No module named pyls
+    # Note: still occurs in alias mode
+    'pyls',
+    # NotADirectoryError: [Errno 20] Not a directory: '<path>/Resourses/lib/
+    # python38.zip/qtawesome/fonts/fontawesome4.7-webfont.ttf'
+    'qtawesome',
+    # NotADirectoryError: [Errno 20] Not a directory: '<path>/Resources/lib/
+    # python38.zip/spyder/app/mac_stylesheet.qss'
+    'spyder',
+    # No module named spyder_kernels.console.__main__
+    'spyder_kernels',
+    ]
 
 if make_lite:
     INCLUDES = []
@@ -134,13 +130,22 @@ else:
     logger.info('Skipping app bundle...')
 
 # =============================================================================
+# Post App Creation
+# =============================================================================
+if make_app:
+    _py_ver = f'python{py_ver[0]}.{py_ver[1]}'
+    # copy egg info from site-packages: fixes pkg_resources issue for pyls
+    for dist in pkg_resources.working_set:
+        dest = os.path.join(distdir, MAC_APP_NAME, 'Contents', 'Resources',
+                            'lib', _py_ver, os.path.basename(dist.egg_info))
+        shutil.copytree(dist.egg_info, dest)
+
+# =============================================================================
 # DMG Creation
 # =============================================================================
-py_version = sys.version.split(' ')[0]
-
-appfile = os.path.join(dist, MAC_APP_NAME)
-name = f'{MAC_APP_NAME[:-4]}-{spy_version} Py-{py_version}'
-dmgfile = os.path.join(dist, f'{name}.dmg')
+appfile = os.path.join(distdir, MAC_APP_NAME)
+name = '{}-{} Py-{}.{}.{}.dmg'.format(MAC_APP_NAME[:-4], spy_version, *py_ver)
+dmgfile = os.path.join(distdir, name)
 settings_file = os.path.join(this_repo, 'dmg_settings.py')
 defines = {'app': appfile, 'badge_icon': iconfile}
 
