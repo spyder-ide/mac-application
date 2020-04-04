@@ -47,7 +47,7 @@ from spyder.config.base import MAC_APP_NAME
 make_app = True if 'py2app' in sys.argv else False
 make_alias = True if '-A' in sys.argv else False
 make_lite = False
-make_dmg = False
+make_dmg = True
 if '--lite' in sys.argv:
     make_lite = True
     sys.argv.remove('--lite')
@@ -67,7 +67,6 @@ APP_MAIN_SCRIPT = MAC_APP_NAME[:-4] + '.py'
 shutil.copy2(os.path.join(spy_repo, 'scripts', 'spyder'), APP_MAIN_SCRIPT)
 
 APP = [APP_MAIN_SCRIPT]
-EXCLUDES = []
 PACKAGES = [
     # The following packages cannot be in Resources/lib/pythonXX.zip
     # ImportError: cannot import name 'context' from 'astroid'
@@ -102,8 +101,10 @@ PACKAGES = [
 
 if make_lite:
     INCLUDES = []
+    EXCLUDES = ['numpy', 'scipy', 'pandas', 'matplotlib', 'cython', 'sympy']
 else:
     INCLUDES = ['numpy', 'scipy', 'pandas', 'matplotlib', 'cython', 'sympy']
+    EXCLUDES = []
 
 EDIT_EXT = [ext[1:] for ext in _get_extensions(EDIT_FILETYPES)]
 
