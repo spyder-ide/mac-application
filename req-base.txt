@@ -1,9 +1,11 @@
 # Spyder core requirements
 applaunchservices >=0.1.7
 atomicwrites >=1.2.0
+autopep8
 chardet >=2.0.0
 cloudpickle >=0.5.0
 diff-match-patch >=20181111
+flake8
 intervaltree
 IPython >=4.0
 jedi ==0.15.2
@@ -16,6 +18,7 @@ pexpect >=4.4.0
 pickleshare >=0.4
 psutil >=5.3
 pycodestyle
+pydocstyle
 pyflakes
 pygments >=2.0
 pylint >=0.25
@@ -28,6 +31,6 @@ qdarkstyle >=2.8
 qtawesome >=0.5.7
 qtconsole >=4.6.0
 qtpy >=1.5.0
+rope
 sphinx >=0.6.6
-spyder-kernels >=1.9.0,<1.10.0
 watchdog
