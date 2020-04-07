@@ -69,6 +69,9 @@ shutil.copy2(os.path.join(spy_repo, 'scripts', 'spyder'), APP_MAIN_SCRIPT)
 APP = [APP_MAIN_SCRIPT]
 PACKAGES = [
     # The following packages cannot be in Resources/lib/pythonXX.zip
+    # Error message: [Errno 20] Not a directory: '<path>/Resources/lib/
+    # python38.zip/alabaster'
+    'alabaster',
     # ImportError: cannot import name 'context' from 'astroid'
     # (<path>/Resources/lib/python38.zip/astroid/__init__.pyc)
     'astroid',
@@ -79,6 +82,8 @@ PACKAGES = [
     # subprocess <path>/Contents/MacOS/python has crashed (EOFError('Ran out
     # of input'), stderr=).")
     'jedi',
+    # No module named 'jinja2.ext'
+    'jinja2',
     # ModuleNotFoundError: No module named 'keyring.backends.<mod>'
     'keyring',
     # NotADirectoryError: [Errno 20] Not a directory:
@@ -97,6 +102,8 @@ PACKAGES = [
     'spyder',
     # No module named spyder_kernels.console.__main__
     'spyder_kernels',
+    # No module named 'sphinx.builders.changes'
+    'sphinx',
     ]
 
 if make_lite:
