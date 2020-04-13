@@ -152,8 +152,10 @@ if make_app:
 # DMG Creation
 # =============================================================================
 appfile = os.path.join(distdir, MAC_APP_NAME)
-name = '{}-{} Py-{}.{}.{}.dmg'.format(MAC_APP_NAME[:-4], spy_version, *py_ver)
-dmgfile = os.path.join(distdir, name)
+name = '{}-{} Py-{}.{}.{}'.format(MAC_APP_NAME[:-4], spy_version, *py_ver)
+if make_lite:
+    name += ' (lite)'
+dmgfile = os.path.join(distdir, name + '.dmg')
 settings_file = os.path.join(this_repo, 'dmg_settings.py')
 defines = {'app': appfile, 'badge_icon': iconfile}
 
