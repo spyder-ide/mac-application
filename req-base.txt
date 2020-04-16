@@ -19,7 +19,7 @@ pickleshare >=0.4
 psutil >=5.3
 pycodestyle
 pydocstyle
-pyflakes
+pyflakes <2.2.0
 pygments >=2.0
 pylint >=0.25
 pyqt5 <5.13
@@ -34,3 +34,4 @@ qtpy >=1.5.0
 rope
 sphinx >=0.6.6
 watchdog
+yapf
