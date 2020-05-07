@@ -8,40 +8,17 @@
 Create a stand-alone Mac OS X app using py2app
 
 To be used like this:
-$ python setup.py py2app   (to build the app)
+$ python setup.py py2app
 """
 
 import os
 import sys
 import shutil
 import pkg_resources
+import subprocess as sp
 from logging import getLogger, StreamHandler, Formatter
 from setuptools import setup
 from dmgbuild import build_dmg
-
-fmt = Formatter('%(asctime)s [%(levelname)s] [%(name)s] -> %(message)s')
-h = StreamHandler()
-h.setFormatter(fmt)
-logger = getLogger('Spy-Mac-App')
-logger.addHandler(h)
-logger.setLevel('INFO')
-
-here = os.path.abspath(__file__)
-this_repo = os.path.dirname(here)
-basedir = os.path.dirname(this_repo)
-distdir = os.path.join(this_repo, 'dist')
-spy_repo = os.path.join(basedir, 'spyder')
-ker_repo = os.path.join(basedir, 'spyder-kernels')
-
-# copy spyder and spyder-kernels to repo
-shutil.rmtree('spyder', ignore_errors=True)
-shutil.rmtree('spyder_kernels', ignore_errors=True)
-shutil.copytree(os.path.join(spy_repo, 'spyder'), 'spyder')
-shutil.copytree(os.path.join(ker_repo, 'spyder_kernels'), 'spyder_kernels')
-
-from spyder import __version__ as spy_version
-from spyder.config.utils import EDIT_FILETYPES, _get_extensions
-from spyder.config.base import MAC_APP_NAME
 
 # parse additional arguments
 make_app = True if 'py2app' in sys.argv else False
@@ -55,14 +32,48 @@ if '--no-dmg' in sys.argv:
     make_dmg = False
     sys.argv.remove('--no-dmg')
 
+# setup logger
+fmt = Formatter('%(asctime)s [%(levelname)s] [%(name)s] -> %(message)s')
+h = StreamHandler()
+h.setFormatter(fmt)
+logger = getLogger('Spy-Mac-App')
+logger.addHandler(h)
+logger.setLevel('INFO')
+
+# setup paths
+here = os.path.abspath(__file__)
+this_repo = os.path.dirname(here)
+basedir = os.path.dirname(this_repo)
+distdir = os.path.join(this_repo, 'dist')
+spy_repo = os.path.join(basedir, 'spyder')
+deps_dir = os.path.join(spy_repo, 'external-deps')
+
+# =============================================================================
+# Copy Spyder Source to Repo
+# =============================================================================
+shutil.rmtree('spyder', ignore_errors=True)
+shutil.copytree(os.path.join(spy_repo, 'spyder'), 'spyder')
+
+# =============================================================================
+# Install Python Language Server and Spyder Kernels from Subrepos
+# =============================================================================
+for pkg_name in ['python-language-server', 'spyder-kernels']:
+    logger.info(f'Installing {pkg_name} from Spyder subrepo')
+    pkg_dir = os.path.join(deps_dir, pkg_name)
+    sp.check_output(['pip', 'install', '--no-deps', '-e', pkg_dir])
+
+# =============================================================================
+# App Creation
+# =============================================================================
+from spyder import __version__ as spy_version                    # noqa
+from spyder.config.utils import EDIT_FILETYPES, _get_extensions  # noqa
+from spyder.config.base import MAC_APP_NAME                      # noqa
+
 iconfile = os.path.join(spy_repo, 'img_src', 'spyder.icns')
 
 py_ver = [sys.version_info.major, sys.version_info.minor,
           sys.version_info.micro]
 
-#==============================================================================
-# App Creation
-#==============================================================================
 APP_MAIN_SCRIPT = MAC_APP_NAME[:-4] + '.py'
 shutil.copy2(os.path.join(spy_repo, 'scripts', 'spyder'), APP_MAIN_SCRIPT)
 
@@ -104,7 +115,7 @@ PACKAGES = [
     'spyder_kernels',
     # No module named 'sphinx.builders.changes'
     'sphinx',
-    ]
+]
 
 if make_lite:
     INCLUDES = []
@@ -171,8 +182,7 @@ else:
 if not make_alias:
     logger.info('Cleaning up...')
     shutil.rmtree('spyder', ignore_errors=True)
-    shutil.rmtree('spyder_kernels', ignore_errors=True)
     if os.path.exists(APP_MAIN_SCRIPT):
         os.remove(APP_MAIN_SCRIPT)
 else:
-    logger.info('Keeping "spyder" and "spyder_kernels" for alias mode')
+    logger.info('Keeping "spyder" for alias mode')
