@@ -60,7 +60,8 @@ shutil.copytree(os.path.join(spy_repo, 'spyder'), 'spyder')
 for pkg_name in ['python-language-server', 'spyder-kernels']:
     logger.info(f'Installing {pkg_name} from Spyder subrepo')
     pkg_dir = os.path.join(deps_dir, pkg_name)
-    sp.check_output(['pip', 'install', '--no-deps', '-e', pkg_dir])
+    sp.check_output(['pip', 'install', '--no-deps', '--force-reinstall',
+                     '-e', pkg_dir])
 
 # =============================================================================
 # App Creation
@@ -155,6 +156,8 @@ if make_app:
     _py_ver = f'python{py_ver[0]}.{py_ver[1]}'
     # copy egg info from site-packages: fixes pkg_resources issue for pyls
     for dist in pkg_resources.working_set:
+        if dist.egg_info is None:
+            continue
         dest = os.path.join(distdir, MAC_APP_NAME, 'Contents', 'Resources',
                             'lib', _py_ver, os.path.basename(dist.egg_info))
         shutil.copytree(dist.egg_info, dest)
