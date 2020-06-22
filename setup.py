@@ -98,21 +98,6 @@ spy_repo = os.path.join(basedir, 'spyder')
 deps_dir = os.path.join(spy_repo, 'external-deps')
 
 # =============================================================================
-# Copy Spyder Source to Repo
-# =============================================================================
-shutil.rmtree('spyder', ignore_errors=True)
-shutil.copytree(os.path.join(spy_repo, 'spyder'), 'spyder')
-
-# =============================================================================
-# Install Python Language Server and Spyder Kernels from Subrepos
-# =============================================================================
-for pkg_name in ['python-language-server', 'spyder-kernels']:
-    logger.info(f'Installing {pkg_name} from Spyder subrepo')
-    pkg_dir = os.path.join(deps_dir, pkg_name)
-    sp.check_output(['pip', 'install', '--no-deps', '--force-reinstall',
-                     '-e', pkg_dir])
-
-# =============================================================================
 # App Creation
 # =============================================================================
 from spyder import __version__ as spy_version                    # noqa
@@ -193,14 +178,3 @@ if make_dmg:
     build_dmg(dmgfile, name, settings_file=settings_file, defines=defines)
 else:
     logger.info('Skipping dmg file...')
-
-# =============================================================================
-# Clean Up
-# =============================================================================
-if not make_alias:
-    logger.info('Cleaning up...')
-    shutil.rmtree('spyder', ignore_errors=True)
-    if os.path.exists(APP_MAIN_SCRIPT):
-        os.remove(APP_MAIN_SCRIPT)
-else:
-    logger.info('Keeping "spyder" for alias mode')
