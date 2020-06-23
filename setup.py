@@ -79,7 +79,7 @@ parser.add_argument('--dmg', dest='make_dmg', action='store_true',
 # parse additional arguments for py2app
 subparsers = parser.add_subparsers()
 py2app_parser = subparsers.add_parser('py2app')
-py2app_parser.add_argument('make_app', default='store_true',
+py2app_parser.add_argument('--make-app', dest='make_app',
                            help=argparse.SUPPRESS)
 
 args, _ = parser.parse_known_args()
@@ -97,7 +97,7 @@ logger.setLevel('INFO')
 here = os.path.abspath(__file__)
 this_repo = os.path.dirname(here)
 distdir = os.path.join(this_repo, 'dist')
-spy_repo = os.path.join(this_repo, 'spyder')
+spy_sub_repo = os.path.join(this_repo, 'spyder-subrepo')
 
 # =============================================================================
 # App Creation
@@ -106,15 +106,11 @@ from spyder import __version__ as spy_version                    # noqa
 from spyder.config.utils import EDIT_FILETYPES, _get_extensions  # noqa
 from spyder.config.base import MAC_APP_NAME                      # noqa
 
-iconfile = os.path.join(spy_repo, 'img_src', 'spyder.icns')
+iconfile = os.path.join(spy_sub_repo, 'img_src', 'spyder.icns')
 
 py_ver = [sys.version_info.major, sys.version_info.minor,
           sys.version_info.micro]
 
-APP_MAIN_SCRIPT = MAC_APP_NAME[:-4] + '.py'
-shutil.copy2(os.path.join(spy_repo, 'scripts', 'spyder'), APP_MAIN_SCRIPT)
-
-APP = [APP_MAIN_SCRIPT]
 PACKAGES = ['alabaster', 'astroid', 'ipykernel', 'IPython', 'jedi', 'jinja2',
             'keyring', 'parso', 'pygments', 'pyls', 'qtawesome', 'spyder',
             'spyder_kernels', 'sphinx',
@@ -142,19 +138,21 @@ OPTIONS = {
               'CFBundleShortVersionString': spy_version}
 }
 
-if args.make_app:
-    if args.make_alias:
-        logger.info('Creating app bundle in alias mode...')
-    else:
-        logger.info('Creating app bundle...')
-    setup(app=APP, options={'py2app': OPTIONS})
+# rename main application script
+app_script_name = MAC_APP_NAME.replace('.app', '.py')
+app_script_path = os.path.join(spy_sub_repo, 'scripts', app_script_name)
+shutil.copy2(os.path.join(spy_sub_repo, 'scripts', 'spyder'), app_script_path)
+
+if 'make_app' in args:
+    logger.info('Creating app bundle...')
+    setup(app=[app_script_path], options={'py2app': OPTIONS})
 else:
     logger.info('Skipping app bundle...')
 
 # =============================================================================
 # Post App Creation
 # =============================================================================
-if args.make_app:
+if 'make_app' in args:
     _py_ver = f'python{py_ver[0]}.{py_ver[1]}'
     # copy egg info from site-packages: fixes pkg_resources issue for pyls
     for dist in pkg_resources.working_set:
@@ -180,3 +178,9 @@ if args.make_dmg:
     build_dmg(dmgfile, name, settings_file=settings_file, defines=defines)
 else:
     logger.info('Skipping dmg file...')
+
+# =============================================================================
+# Clean up
+# =============================================================================
+logger.info('Cleaning up...')
+os.remove(app_script_path)

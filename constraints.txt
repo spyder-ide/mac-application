@@ -1,2 +1,0 @@
-# Spyder build environment constraints
-pyobjc ==6.2  # 6.2.1 will not build; required by applaunchservices
