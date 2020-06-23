@@ -63,23 +63,27 @@ sphinx :
 import os
 import sys
 import shutil
+import argparse
 import pkg_resources
-import subprocess as sp
 from logging import getLogger, StreamHandler, Formatter
 from setuptools import setup
 from dmgbuild import build_dmg
 
-# parse additional arguments
-make_app = True if 'py2app' in sys.argv else False
-make_alias = True if '-A' in sys.argv else False
-make_lite = False
-make_dmg = True
-if '--lite' in sys.argv:
-    make_lite = True
-    sys.argv.remove('--lite')
-if '--no-dmg' in sys.argv:
-    make_dmg = False
-    sys.argv.remove('--no-dmg')
+# parse additional arguments for setup.py
+parser = argparse.ArgumentParser()
+parser.add_argument('--lite', dest='make_lite', action='store_true',
+                    default=False, help='Build without numpy and friends')
+parser.add_argument('--dmg', dest='make_dmg', action='store_true',
+                    default=False, help='Create DMG')
+
+# parse additional arguments for py2app
+subparsers = parser.add_subparsers()
+py2app_parser = subparsers.add_parser('py2app')
+py2app_parser.add_argument('make_app', default='store_true',
+                           help=argparse.SUPPRESS)
+
+args, _ = parser.parse_known_args()
+[sys.argv.remove(s) for s in ['--lite', '--dmg'] if s in sys.argv]
 
 # setup logger
 fmt = Formatter('%(asctime)s [%(levelname)s] [%(name)s] -> %(message)s')
@@ -92,10 +96,8 @@ logger.setLevel('INFO')
 # setup paths
 here = os.path.abspath(__file__)
 this_repo = os.path.dirname(here)
-basedir = os.path.dirname(this_repo)
 distdir = os.path.join(this_repo, 'dist')
-spy_repo = os.path.join(basedir, 'spyder')
-deps_dir = os.path.join(spy_repo, 'external-deps')
+spy_repo = os.path.join(this_repo, 'spyder')
 
 # =============================================================================
 # App Creation
@@ -118,7 +120,7 @@ PACKAGES = ['alabaster', 'astroid', 'ipykernel', 'IPython', 'jedi', 'jinja2',
             'spyder_kernels', 'sphinx',
             ]
 
-if make_lite:
+if args.make_lite:
     INCLUDES = []
     EXCLUDES = ['numpy', 'scipy', 'pandas', 'matplotlib', 'cython', 'sympy']
 else:
@@ -140,8 +142,8 @@ OPTIONS = {
               'CFBundleShortVersionString': spy_version}
 }
 
-if make_app:
-    if make_alias:
+if args.make_app:
+    if args.make_alias:
         logger.info('Creating app bundle in alias mode...')
     else:
         logger.info('Creating app bundle...')
@@ -152,7 +154,7 @@ else:
 # =============================================================================
 # Post App Creation
 # =============================================================================
-if make_app:
+if args.make_app:
     _py_ver = f'python{py_ver[0]}.{py_ver[1]}'
     # copy egg info from site-packages: fixes pkg_resources issue for pyls
     for dist in pkg_resources.working_set:
@@ -167,13 +169,13 @@ if make_app:
 # =============================================================================
 appfile = os.path.join(distdir, MAC_APP_NAME)
 name = '{}-{} Py-{}.{}.{}'.format(MAC_APP_NAME[:-4], spy_version, *py_ver)
-if make_lite:
+if args.make_lite:
     name += ' (lite)'
 dmgfile = os.path.join(distdir, name + '.dmg')
 settings_file = os.path.join(this_repo, 'dmg_settings.py')
 defines = {'app': appfile, 'badge_icon': iconfile}
 
-if make_dmg:
+if args.make_dmg:
     logger.info('Building dmg file...')
     build_dmg(dmgfile, name, settings_file=settings_file, defines=defines)
 else:
