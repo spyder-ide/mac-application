@@ -97,7 +97,7 @@ logger.setLevel('INFO')
 here = os.path.abspath(__file__)
 this_repo = os.path.dirname(here)
 distdir = os.path.join(this_repo, 'dist')
-spy_sub_repo = os.path.join(this_repo, 'spyder-subrepo')
+spy_sub_repo = os.path.join(this_repo, 'subrepos', 'spyder')
 
 # =============================================================================
 # App Creation

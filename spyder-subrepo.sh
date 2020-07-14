@@ -1,35 +1,50 @@
 #!/bin/bash
-set -e
 
+help()
+{
+    echo "spyder-subrepo.sh [-a][-b <BRANCH>][-h]"
+    echo "Clone development spyder subrepo and install python-language-server and spyder-kernels"
+    echo "subrepos"
+    echo "Options:"
+    echo "  -a          Force reinstall build and extras requirment files, and all spyder dependents;"
+    echo "              otherwise only force reinstall python-language-server and spyder-kernel"
+    echo "              subprepos"
+    echo "  -b BRANCH   Checkout BRANCH of the spyder subrepo"
+    echo "  -h          Display this help"
+}
 if [[ -n $CONDA_PREFIX ]]; then
     echo 'In conda environment; exiting'
     exit 1
 fi
 
-REPO=../spyder
-SUBREPO=./spyder-subrepo
+REPO=~/Documents/Python/spyder
+SUBREPO=./subrepos/spyder
 PYLS=${SUBREPO}/external-deps/python-language-server
 KERN=${SUBREPO}/external-deps/spyder-kernels
 
-while [[ $# -gt 0 ]]; do
-    case "$1" in
-        -b)
-            shift
-            BRANCH=$1
-            shift
-            ;;
-        --all)
-            shift
-            ALL=1
-            ;;
+while getopts ":ab:h" option; do
+    case "$option" in
+        a)
+            ALL=1;;
+        b)
+            BRANCH=$OPTARG;;
+        h)
+            help
+            exit;;
         *)
-            shift
-            ;;
+            echo "Invalid option"
+            exit;;
     esac
 done
+shift $(($OPTIND - 1))
+
+if [[ -z $BRANCH ]]; then
+    echo "Must specify branch: -b <BRANCH>"
+    exit
+fi
 
 echo 'Cloning '${REPO}
-git subrepo clone -f ${REPO} ${SUBREPO} -b ${BRANCH:?must specify branch: -b <BRANCH>}
+git subrepo clone -f ${REPO} ${SUBREPO} -b ${BRANCH}
 
 ln -sF "${SUBREPO}/spyder" .
 
