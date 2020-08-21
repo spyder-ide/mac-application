@@ -2,23 +2,33 @@
 
 help()
 {
-    echo "create-build-env.sh [-h][-e <ENV>][-v <PYVER>]"
-    echo "Create fresh pyenv environment ENV with Python version PYVER"
+    echo "create-build-env.sh [-h] [-a] [-e <ENV>] [-v <PYVER>]"
+    echo "Create fresh pyenv environment ENV with Python version PYVER and install spyder"
+    echo "dependents. Dependents are determined from the current spyder subrepo and"
+    echo "python-language-server and spyder-kernels are installed from the subsubrepos"
     echo "Options:"
     echo "  -h          Display this help"
+    echo "  -a          Force reinstall build and extras requirment files, and all spyder"
+    echo "				dependents; otherwise only force reinstall python-language-server"
+    echo "			    and spyder-kernels subprepos."
     echo "  -e ENV      Specify the environment name"
     echo "  -v PYVER    Specify the Python version. Default is 3.8.2"
 }
 
 PYVER=3.8.2
+SUBREPO=./subrepos/spyder
+PYLS=${SUBREPO}/external-deps/python-language-server
+KERN=${SUBREPO}/external-deps/spyder-kernels
 
-while getopts ":e:h" option; do
+while getopts ":ae:hv:" option; do
     case $option in
+        a)
+        	ALL=1;;
+        e)
+            ENV=$OPTARG;;
         h)
             help
             exit;;
-        e)
-            ENV=$OPTARG;;
         v)
             PYVER=$OPTARG;;
         *)
@@ -41,3 +51,13 @@ pyenv virtualenv $PYVER $ENV
 export PYENV_VERSION=$ENV
 
 pip install -U pip
+
+if [[ -n $ALL ]]; then
+    echo 'Installing all spyder dependants'
+    pip install --force-reinstall\
+        -r req-build.txt -r req-extras.txt -c req-const.txt -e ${PYLS} -e ${KERN} -e ${SUBREPO}
+    pip uninstall -q -y spyder
+else
+    echo 'Installing PyLS and spyder-kernels'
+    pip install --no-deps --force-reinstall -q -e ${PYLS} -e ${KERN}
+fi
