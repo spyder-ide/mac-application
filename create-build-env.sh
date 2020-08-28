@@ -41,16 +41,16 @@ if [[ -z $ENV ]]; then
     exit
 fi
 
-echo 'Removing pyenv '$ENV' environment'
-pyenv uninstall -f $ENV
-
-echo 'Building '$ENV' environment'
-pyenv virtualenv $PYVER $ENV
-export PYENV_VERSION=$ENV
-
-pip install -U pip
-
 if [[ -n $ALL ]]; then
+    echo 'Removing pyenv '$ENV' environment'
+    pyenv uninstall -f $ENV
+
+    echo 'Building '$ENV' environment'
+    pyenv virtualenv $PYVER $ENV
+    export PYENV_VERSION=$ENV
+
+    pip install -U pip
+
     echo 'Installing all spyder dependants'
     pip install --force-reinstall\
         -r req-build.txt -r req-extras.txt -c req-const.txt -e ${PYLS} -e ${SUBREPO}
