@@ -1,61 +1,64 @@
 #!/bin/bash
+set -e
 
 help()
 {
-    echo "create-build-env.sh [-h] [-a] [-e <ENV>] [-v <PYVER>]"
+    echo ""
+    echo "create-build-env.sh [-h] [-v PYVER] ENV"
     echo "Create fresh pyenv environment ENV with Python version PYVER and install spyder"
     echo "dependents. Dependents are determined from the current spyder subrepo and"
     echo "python-language-server is installed from the subsubrepo"
+    echo ""
+    echo "Required:"
+    echo "  ENV         Environment name"
+    echo ""
     echo "Options:"
     echo "  -h          Display this help"
-    echo "  -a          Force reinstall build and extras requirment files, and all spyder"
-    echo "              dependents; otherwise only force reinstall python-language-server"
-    echo "  -e ENV      Specify the environment name"
     echo "  -v PYVER    Specify the Python version. Default is 3.8.2"
+    echo ""
 }
 
 PYVER=3.8.2
 SUBREPO=./subrepos/spyder
 PYLS=${SUBREPO}/external-deps/python-language-server
+SPYK=${SUBREPO}/external-deps/spyder-kernels
 
-while getopts ":ae:hv:" option; do
+while getopts "hv:" option; do
     case $option in
-        a)
-        	ALL=1;;
-        e)
-            ENV=$OPTARG;;
         h)
             help
             exit;;
         v)
             PYVER=$OPTARG;;
-        *)
-            echo "Invalid option"
-            exit;;
     esac
 done
 shift $(($OPTIND - 1))
 
+ENV=$1
+
 if [[ -z $ENV ]]; then
-    echo "Must specify environment name: -e <ENV>"
+    echo "Please specify environment name."
+    exit
+fi
+if [[ -n $CONDA_DEFAULT_ENV ]]; then
+    echo "Please deactivate $CONDA_DEFAULT_ENV"
+    exit
+fi
+if [[ -n $PYENV_VERSION && $PYENV_VERSION==$ENV ]]; then
+    echo "Please deactivate $PYENV_VERSION"
     exit
 fi
 
-if [[ -n $ALL ]]; then
-    echo 'Removing pyenv '$ENV' environment'
-    pyenv uninstall -f $ENV
+echo "Removing $ENV environment..."
+pyenv uninstall -f $ENV
 
-    echo 'Building '$ENV' environment'
-    pyenv virtualenv $PYVER $ENV
-    export PYENV_VERSION=$ENV
+echo "Building $ENV environment..."
+pyenv virtualenv $PYVER $ENV
+export PYENV_VERSION=$ENV
 
-    pip install -U pip
+pip install -U pip
 
-    echo 'Installing all spyder dependants'
-    pip install --force-reinstall\
-        -r req-build.txt -r req-extras.txt -c req-const.txt -e ${PYLS} -e ${SUBREPO}
-    pip uninstall -q -y spyder
-else
-    echo 'Installing PyLS and spyder-kernels'
-    pip install --no-deps --force-reinstall -q -e ${PYLS}
-fi
+echo "Installing spyder dependants..."
+pip install -r req-build.txt -r req-extras.txt -c req-const.txt \
+            -e ${PYLS} -e ${SPYK} -e ${SUBREPO}
+pip uninstall -q -y spyder

@@ -1,42 +1,43 @@
 #!/bin/bash
+set -e
 
 help()
 {
-    echo "spyder-subrepo.sh [-b <BRANCH>] [-h]"
-    echo "Clone development spyder subrepo to subprepos directory and create symbolic link"
-    echo "in current directory."
+    echo ""
+    echo "spyder-subrepo.sh [-h] [-d REPO] [-b <BRANCH>]"
+    echo "Clone spyder subrepo to subprepos directory and create symbolic link in current"
+    echo "directory."
+    echo ""
     echo "Options:"
-    echo "  -b BRANCH   Checkout BRANCH of the spyder subrepo"
+    echo "  -d REPO     Repository to clone. Default https://github.com/spyder-ide/spyder.git"
+    echo "  -b BRANCH   Checkout BRANCH of the spyder subrepo. Default is 4.x"
     echo "  -h          Display this help"
+    echo ""
 }
-if [[ -n $CONDA_PREFIX ]]; then
-    echo 'In conda environment; exiting'
-    exit 1
+
+if [[ -n $CONDA_DEFAULT_ENV ]]; then
+    echo "In conda environment; exiting"
+    exit
 fi
 
-REPO=~/Documents/Python/spyder
+CLONE=https://github.com/spyder-ide/spyder.git
+BRANCH=4.x
 SUBREPO=./subrepos/spyder
 
-while getopts ":b:h" option; do
+while getopts "d:b:h" option; do
     case "$option" in
+        d)
+            CLONE=$OPTARG;;
         b)
             BRANCH=$OPTARG;;
         h)
             help
             exit;;
-        *)
-            echo "Invalid option"
-            exit;;
     esac
 done
 shift $(($OPTIND - 1))
 
-if [[ -z $BRANCH ]]; then
-    echo "Must specify branch: -b <BRANCH>"
-    exit
-fi
-
-echo 'Cloning '${REPO}
-git subrepo clone -f ${REPO} ${SUBREPO} -b ${BRANCH}
+echo "Cloning ${CLONE}"
+git subrepo clone -f ${CLONE} ${SUBREPO} -b ${BRANCH}
 
 ln -sF "${SUBREPO}/spyder" .
